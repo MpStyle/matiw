@@ -65,7 +65,19 @@ export const AppBar: FunctionComponent = () => {
                    }}>
             <Toolbar>
                 <Logo sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>
-                <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
+                <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{
+                        fontWeight: 'bold',
+                        fontStretch: 'ultra-expanded',
+                        fontWidth: 'ultra-expanded',
+                        flexGrow: 1,
+                        letterSpacing: 1.5,
+                        background: "-webkit-linear-gradient(#45cbff, #be31fe)",
+                        "-webkit-background-clip": "text",
+                        "-webkit-text-fill-color": "transparent",
+                    }}>
                     Matiw
                 </Typography>
 

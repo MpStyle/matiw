@@ -17,7 +17,6 @@ import {Icon, Style} from "ol/style";
 import moment from "moment";
 import {DataDrawer, drawerWidth} from "./DataDrawer.tsx";
 import Toolbar from "@mui/material/Toolbar";
-import FmdGoodIcon from "@mui/icons-material/FmdGood";
 import {Logo} from "../../filters/components/Logo.tsx";
 
 interface CardState {
