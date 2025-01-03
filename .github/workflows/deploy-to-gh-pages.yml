@@ -24,7 +24,7 @@ jobs:
         shell: bash
       - run: git config user.email github-actions@github.com
         shell: bash
-      - run: git --work-tree build add --all
+      - run: git --work-tree dist add --all
         shell: bash
       - name: Creating deploy commit...
         run: |
