@@ -5,7 +5,7 @@ import TuneIcon from '@mui/icons-material/Tune';
 import React, {Fragment, FunctionComponent, useState} from "react";
 import {UploadFile} from "@mui/icons-material";
 import {Badge, Box, IconButton, styled, useTheme} from "@mui/material";
-import FilterDialog from "./FilterDialog.tsx";
+import FilterDialog from "../../filters/components/FilterDialog.tsx";
 import {useDispatch, useSelector} from "react-redux";
 import {AppState} from "../../core/entities/AppState.ts";
 import {storeData} from "../slices/HomeSlice.ts";
@@ -30,7 +30,7 @@ export const AppBar: FunctionComponent = () => {
     const dispatch = useDispatch();
     const [openFilters, setOpenFilters] = useState(false);
     const [openSettings, setSettingsOpen] = useState(false);
-    const filters = useSelector((appState: AppState) => (appState.home.filters));
+    const filters = useSelector((appState: AppState) => (appState.filters));
     const jsonData = useSelector((appState: AppState) => appState.home.data);
     const filterCount = Object.values(filters).filter(value => value).length;
     const jsonLoaded = jsonData.length > 0;

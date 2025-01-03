@@ -16,15 +16,16 @@ import {
     Stack,
     Tooltip
 } from '@mui/material';
-import {initialHomeState, setFilters as setAppFilters} from "../slices/HomeSlice.ts";
+import {setFilters as setAppFilters} from "../../filters/slices/FiltersSlice.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {AppState} from "../../core/entities/AppState.ts";
-import {DataItem} from "../entities/DataItem.tsx";
+import {DataItem} from "../../home/entities/DataItem.tsx";
 import {DatePicker} from "@mui/x-date-pickers";
 import moment from "moment";
 import Typography from "@mui/material/Typography";
 import CloseIcon from '@mui/icons-material/Close';
 import Divider from '@mui/material/Divider';
+import {initialFiltersState} from "../slices/FiltersSlice.ts";
 
 interface FilterDialogProps {
     open: boolean;
@@ -39,7 +40,7 @@ const FilterDialog: React.FC<FilterDialogProps> = ({open, onClose,}) => {
     const [years, setYears] = useState<string[]>([]);
     const [months, setMonths] = useState<string[]>([]);
     const [days, setDays] = useState<string[]>([]);
-    const appFilters = useSelector((appState: AppState) => (appState.home.filters));
+    const appFilters = useSelector((appState: AppState) => (appState.filters));
     const [filters, setFilters] = useState(appFilters);
 
     useEffect(() => {
@@ -162,7 +163,7 @@ const FilterDialog: React.FC<FilterDialogProps> = ({open, onClose,}) => {
                                 value={filters.year}
                                 onChange={e => setFilters({...filters, year: e.target.value})}
                                 fullWidth>
-                                <MenuItem value={initialHomeState.filters.year}><em>&nbsp;</em></MenuItem>
+                                <MenuItem value={initialFiltersState.year}><em>&nbsp;</em></MenuItem>
                                 {years.map(year => (
                                     <MenuItem key={year} value={year}>
                                         {year}
@@ -181,7 +182,7 @@ const FilterDialog: React.FC<FilterDialogProps> = ({open, onClose,}) => {
                                 value={filters.month}
                                 onChange={e => setFilters({...filters, month: e.target.value})}
                                 fullWidth>
-                                <MenuItem value={initialHomeState.filters.month}><em>&nbsp;</em></MenuItem>
+                                <MenuItem value={initialFiltersState.month}><em>&nbsp;</em></MenuItem>
                                 {months.map(month => (
                                     <MenuItem key={month} value={month}>
                                         {month}
@@ -199,7 +200,7 @@ const FilterDialog: React.FC<FilterDialogProps> = ({open, onClose,}) => {
                                 name="day"
                                 value={filters.day}
                                 onChange={e => setFilters({...filters, day: e.target.value})}>
-                                <MenuItem value={initialHomeState.filters.day}><em>&nbsp;</em></MenuItem>
+                                <MenuItem value={initialFiltersState.day}><em>&nbsp;</em></MenuItem>
                                 {days.map(day => (
                                     <MenuItem key={day} value={day}>
                                         {day}

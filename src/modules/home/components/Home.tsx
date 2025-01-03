@@ -32,7 +32,7 @@ export const Home: FunctionComponent = () => {
     const dateTimeFormat = useSelector((appState: AppState) => appState.settings.dateTimeFormat);
     const [filteredData, setFilteredData] = useState<DataItem[]>([]);
     const [map, setMap]= useState<Map | null>(null);
-    const filters = useSelector((appState: AppState) => (appState.home.filters));
+    const filters = useSelector((appState: AppState) => (appState.filters));
     const [cardState, setCardState] = useState<CardState>({
         visible: false
     });

@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {DataItem} from "../entities/DataItem.tsx";
-import {HomeFiltersState, HomeState} from "../entities/HomeState.ts";
+import {HomeState} from "../entities/HomeState.ts";
 
 export const initialHomeState: HomeState = {
     data: [],
@@ -8,15 +8,6 @@ export const initialHomeState: HomeState = {
     years: [],
     months: [],
     days: [],
-
-    filters: {
-        startDate: '',
-        endDate: '',
-
-        year: '',
-        month: '',
-        day: '',
-    }
 }
 
 export const homeSlice = createSlice({
@@ -40,17 +31,13 @@ export const homeSlice = createSlice({
             state.years = Array.from(uniqueYears).sort();
             state.months = Array.from(uniqueMonths).sort((a, b) => parseInt(a) - parseInt(b));
             state.days = Array.from(uniqueDays).sort((a, b) => parseInt(a) - parseInt(b));
-        },
-        setFilters: (state, action: PayloadAction<HomeFiltersState>) => {
-            state.filters = action.payload;
         }
     },
 })
 
 // Action creators are generated for each case reducer function
 export const {
-    storeData,
-    setFilters
+    storeData
 } = homeSlice.actions
 
 export default homeSlice.reducer
