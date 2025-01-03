@@ -30,6 +30,7 @@ interface CardState {
 export const Home: FunctionComponent = () => {
     const jsonData = useSelector((appState: AppState) => appState.home.data);
     const [filteredData, setFilteredData] = useState<DataItem[]>([]);
+    const [map, setMap]= useState<Map | null>(null);
     const filters = useSelector((appState: AppState) => (appState.home.filters));
     const [cardState, setCardState] = useState<CardState>({
         visible: false
@@ -49,6 +50,8 @@ export const Home: FunctionComponent = () => {
                 zoom: 13,
             }),
         });
+
+        setMap(map);
 
         const fd = jsonData
             .filter((item: DataItem) => {
@@ -171,6 +174,17 @@ export const Home: FunctionComponent = () => {
             <Box id="map" sx={{width: "100%", height: "100%"}}/>
         </Box>
 
-        {!!filteredData.length && <DataDrawer jsonData={filteredData}/>}
+        {!!filteredData.length && <DataDrawer jsonData={filteredData} onLocationClick={coordinate=>{
+            if (map && coordinate) {
+                const match = coordinate.match(/geo:(-?\d+\.\d+),(-?\d+\.\d+)/);
+                if (match) {
+                    const [, lat, lng] = match;
+                    map.getView().animate({
+                        center: fromLonLat([parseFloat(lng), parseFloat(lat)]),
+                        zoom: 18,
+                    });
+                }
+            }
+        }}/>}
     </Box>;
 };

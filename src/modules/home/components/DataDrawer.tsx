@@ -1,5 +1,5 @@
 import {CSSProperties, FunctionComponent} from "react";
-import {Avatar, Box, Drawer, ListItem, ListItemAvatar, ListItemText} from "@mui/material";
+import {Avatar, Box, Drawer, ListItem, ListItemAvatar, ListItemButton, ListItemText} from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {VariableSizeList} from "react-window";
@@ -7,9 +7,14 @@ import {DataItem} from "../entities/DataItem.tsx";
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
 import moment from "moment/moment";
 
-export const drawerWidth = 240;
+export const drawerWidth = 280;
 
-export const DataDrawer: FunctionComponent<{ jsonData: DataItem[] }> = ({jsonData}) => {
+export interface DataDrawerProps {
+    jsonData: DataItem[];
+    onLocationClick: (coordinate?: string) => void;
+}
+
+export const DataDrawer: FunctionComponent<DataDrawerProps> = ({jsonData, onLocationClick}) => {
     return <Drawer
         sx={{
             width: drawerWidth,
@@ -25,30 +30,19 @@ export const DataDrawer: FunctionComponent<{ jsonData: DataItem[] }> = ({jsonDat
         <Toolbar/>
 
         <Box sx={{height: `calc(100% - 64px)`}}>
-            <ReactWindowList jsonData={jsonData}/>
+            <ReactWindowList jsonData={jsonData} onLocationClick={onLocationClick}/>
         </Box>
     </Drawer>;
 }
 
 const rowHeight = 85;
 
-const Row: FunctionComponent<{ data: DataItem[], index: number, style: CSSProperties; }> = ({data, index, style}) => {
-    const itemData = data[index];
+interface ReactWindowListProps {
+    jsonData: DataItem[];
+    onLocationClick: (coordinate?: string) => void;
+}
 
-    return <Box style={style}>
-        <ListItem>
-            <ListItemAvatar>
-                <Avatar>
-                    <FmdGoodIcon/>
-                </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={moment(new Date(itemData.startTime)).format('YYYY-MM-DD HH:mm')}
-                          secondary={itemData.visit?.topCandidate?.placeLocation.replace("geo:", '')}/>
-        </ListItem>
-    </Box>;
-};
-
-const ReactWindowList: FunctionComponent<{ jsonData: DataItem[] }> = ({jsonData}) => {
+const ReactWindowList: FunctionComponent<ReactWindowListProps> = ({jsonData, onLocationClick}) => {
     return <AutoSizer>
         {({height, width}) => (
             <VariableSizeList
@@ -57,10 +51,33 @@ const ReactWindowList: FunctionComponent<{ jsonData: DataItem[] }> = ({jsonData}
                 itemKey={index => `${jsonData[index].startTime}-${jsonData[index].visit?.topCandidate?.placeLocation}`}
                 itemCount={jsonData.length}
                 itemSize={() => rowHeight}
-                itemData={jsonData}
+                itemData={{jsonData, onLocationClick}}
                 width={width}>
                 {Row}
             </VariableSizeList>
         )}
     </AutoSizer>;
+};
+
+interface RowData {
+    jsonData: DataItem[];
+    onLocationClick: (coordinate?: string) => void;
+}
+
+const Row: FunctionComponent<{ data: RowData, index: number, style: CSSProperties; }> = ({data, index, style}) => {
+    const itemData = data.jsonData[index];
+
+    return <Box style={style}>
+        <ListItem disablePadding>
+            <ListItemButton onClick={() => data.onLocationClick(itemData.visit?.topCandidate?.placeLocation)}>
+                <ListItemAvatar>
+                    <Avatar>
+                        <FmdGoodIcon/>
+                    </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={moment(new Date(itemData.startTime)).format('YYYY-MM-DD HH:mm')}
+                              secondary={itemData.visit?.topCandidate?.placeLocation.replace("geo:", '')}/>
+            </ListItemButton>
+        </ListItem>
+    </Box>;
 };
