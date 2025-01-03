@@ -9,6 +9,7 @@ import FilterDialog from "./FilterDialog.tsx";
 import {useDispatch, useSelector} from "react-redux";
 import {AppState} from "../../core/entities/AppState.ts";
 import {storeData} from "../slices/HomeSlice.ts";
+import {DataItem} from "../entities/DataItem.tsx";
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -40,8 +41,8 @@ export const AppBar: FunctionComponent = () => {
             const reader = new FileReader();
             reader.onload = (e) => {
                 const content = e.target?.result as string;
-                const json = JSON.parse(content);
-                dispatch(storeData(json));
+                const json = JSON.parse(content) as DataItem[];
+                dispatch(storeData(json.filter(item => !!item.visit?.topCandidate?.placeLocation)));
             };
             reader.readAsText(file);
         }

@@ -110,7 +110,7 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
                             slotProps={{textField: {fullWidth: true}}}
                             label="Start Date"
                             name="startDate"
-                            value={filters.startDate === '' ? moment(minDate) : moment(filters.startDate)}
+                            value={filters.startDate === '' ? moment(new Date(minDate)) : moment(filters.startDate)}
                             onChange={e => setFilters({...filters, startDate: e ? e.toDate().toString() : ''})}
                         />
 
@@ -120,7 +120,7 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
                             slotProps={{textField: {fullWidth: true}}}
                             label="End Date"
                             name="endDate"
-                            value={filters.startDate === '' ? moment(maxDate) : moment(filters.endDate)}
+                            value={filters.startDate === '' ? moment(new Date(maxDate)) : moment(filters.endDate)}
                             onChange={e => setFilters({...filters, endDate: e ? e.toDate().toString() : ''})}
                         />
                     </Stack>

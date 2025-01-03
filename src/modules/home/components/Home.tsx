@@ -160,7 +160,7 @@ export const Home: FunctionComponent = () => {
         </Card>}
 
         <Box component="main"
-             sx={{width: `calc(100% - ${!!jsonData.length ? drawerWidth : 0}px)`, height: 'calc(100% - 64px)'}}>
+             sx={{width: `calc(100% - ${jsonData.length ? drawerWidth : 0}px)`, height: 'calc(100% - 64px)'}}>
             <Toolbar/>
             <Box id="map" sx={{width: "100%", height: "100%"}}/>
         </Box>
