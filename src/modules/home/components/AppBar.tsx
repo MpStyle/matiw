@@ -1,0 +1,89 @@
+import MuiAppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import TuneIcon from '@mui/icons-material/Tune';
+import React, {Fragment, FunctionComponent, useState} from "react";
+import {UploadFile} from "@mui/icons-material";
+import {Badge, IconButton, styled, useTheme} from "@mui/material";
+import FilterDialog from "./FilterDialog.tsx";
+import {useDispatch, useSelector} from "react-redux";
+import {AppState} from "../../core/entities/AppState.ts";
+import {storeData} from "../slices/HomeSlice.ts";
+
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+});
+
+export const AppBar: FunctionComponent = () => {
+    const theme = useTheme();
+    const dispatch = useDispatch();
+    const [open, setOpen] = useState(false);
+    const filters = useSelector((appState: AppState) => (appState.home.filters));
+    const jsonData = useSelector((appState: AppState) => appState.home.data);
+    const filterCount = Object.values(filters).filter(value => value).length;
+    const jsonLoaded = jsonData.length > 0;
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const content = e.target?.result as string;
+                const json = JSON.parse(content);
+                dispatch(storeData(json));
+            };
+            reader.readAsText(file);
+        }
+    };
+
+    return <Fragment>
+        <MuiAppBar position="fixed"
+                   elevation={2}
+                   sx={{
+                       backgroundColor: '#fff',
+                       color: theme.palette.text.primary,
+                       zIndex: theme.zIndex.drawer + 1
+                   }}>
+            <Toolbar>
+                <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
+                    Matiw
+                </Typography>
+
+                <IconButton component="label"
+                            role={undefined}
+                            tabIndex={-1}>
+                    <UploadFile/>
+                    <VisuallyHiddenInput
+                        type="file"
+                        accept=".json"
+                        onChange={handleFileUpload}
+                    />
+                </IconButton>
+
+                {jsonLoaded && (
+                    <Badge badgeContent={filterCount} color="primary">
+                        <IconButton onClick={handleOpen}>
+                            <TuneIcon/>
+                        </IconButton>
+                    </Badge>
+                )}
+            </Toolbar>
+        </MuiAppBar>
+
+        <FilterDialog
+            open={open}
+            onClose={handleClose}
+        />
+    </Fragment>;
+}
