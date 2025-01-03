@@ -4,10 +4,10 @@ import Toolbar from "@mui/material/Toolbar";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {VariableSizeList} from "react-window";
 import {DataItem} from "../entities/DataItem.tsx";
-import FmdGoodIcon from '@mui/icons-material/FmdGood';
 import moment from "moment/moment";
 import {useSelector} from "react-redux";
 import {AppState} from "../../core/entities/AppState.ts";
+import {Logo} from "../../filters/components/Logo.tsx";
 
 export const drawerWidth = 280;
 
@@ -74,8 +74,8 @@ const Row: FunctionComponent<{ data: RowData, index: number, style: CSSPropertie
         <ListItem disablePadding>
             <ListItemButton onClick={() => data.onLocationClick(itemData.visit?.topCandidate?.placeLocation)}>
                 <ListItemAvatar>
-                    <Avatar>
-                        <FmdGoodIcon/>
+                    <Avatar sx={{backgroundColor: 'rgba(0,0,0,0)'}}>
+                        <Logo sx={{width: 48, height: 48}}/>
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText primary={moment(new Date(itemData.startTime)).format(dateTimeFormat)}

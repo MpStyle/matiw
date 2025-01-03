@@ -18,6 +18,7 @@ import moment from "moment";
 import {DataDrawer, drawerWidth} from "./DataDrawer.tsx";
 import Toolbar from "@mui/material/Toolbar";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
+import {Logo} from "../../filters/components/Logo.tsx";
 
 interface CardState {
     visible: boolean;
@@ -89,7 +90,7 @@ export const Home: FunctionComponent = () => {
                                 height: 30,
                                 anchorXUnits: 'fraction',
                                 anchorYUnits: 'pixels',
-                                src: 'placeholder.webp',
+                                src: 'logo-256x256.png',
                             }),
                         });
 
@@ -160,8 +161,8 @@ export const Home: FunctionComponent = () => {
         }}>
             <ListItem>
                 <ListItemAvatar>
-                    <Avatar>
-                        <FmdGoodIcon/>
+                    <Avatar sx={{backgroundColor: 'rgba(0,0,0,0)'}}>
+                        <Logo sx={{width: 48, height: 48}}/>
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText primary={moment(cardState.start).format(dateTimeFormat)}

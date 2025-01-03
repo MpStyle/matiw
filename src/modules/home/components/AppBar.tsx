@@ -12,6 +12,7 @@ import {storeData} from "../slices/HomeSlice.ts";
 import {DataItem} from "../entities/DataItem.tsx";
 import {SettingsDialog} from "../../settings/components/SettingsDialog.tsx";
 import SettingsIcon from '@mui/icons-material/Settings';
+import {Logo} from "../../filters/components/Logo.tsx";
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -63,6 +64,7 @@ export const AppBar: FunctionComponent = () => {
                        zIndex: theme.zIndex.drawer + 1
                    }}>
             <Toolbar>
+                <Logo sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>
                 <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                     Matiw
                 </Typography>
