@@ -10,6 +10,8 @@ Matiw is a viewer for Google Maps Timeline backup files. Since Google Maps Timel
   - Date range.
   - Specific dates (year, month, day, or all three).
 
+![Matiw screenshot](docs/screenshot-01.png)
+
 ## Why Matiw?
 Google Maps Timeline's mobile app lacks advanced search capabilities, making it difficult to efficiently analyze your timeline history. With Matiw, you can easily explore your timeline backups with more granular control over your searches.
 
@@ -26,11 +28,15 @@ Google Maps Timeline backups are no longer available through Google Takeout. Bac
 ## Access
 You can access Matiw directly at [https://mpstyle.github.io/matiw/](https://mpstyle.github.io/matiw/).
 
+## Privacy
+Matiw does not share any personal or sensitive data with anyone. Your data remains entirely private and secure.
+
 ## Future Development
 We have exciting plans to enhance Matiw with the following features:
 - **Customizable Icons:** Allow users to personalize icons and colors for places.
 - **Saved Filters:** Enable saving filter configurations with custom names for quick access.
 - **Multilingual Support:** Add support for multiple languages to make the application accessible to a global audience.
+- **Mobile Support:** Optimize Matiw for mobile devices to provide a seamless experience across all platforms.
 
 We are also open to suggestions for further improvements! Feel free to share your ideas to help us make Matiw even better.
 
