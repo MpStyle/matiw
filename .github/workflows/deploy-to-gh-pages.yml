@@ -26,10 +26,6 @@ jobs:
         shell: bash
       - run: git --work-tree dist add --all
         shell: bash
-      - name: Creating deploy commit...
-        run: |
-          git commit -m "Automatic deploy - `date +'%Y-%m-%d %H:%M:%S'`"
-        shell: bash
       - name: Deploying to GitHub Pages
         run: git push origin HEAD:gh-pages --force
         shell: bash
