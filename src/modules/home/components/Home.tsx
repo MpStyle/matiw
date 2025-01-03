@@ -18,6 +18,7 @@ import moment from "moment";
 import {DataDrawer, drawerWidth} from "./DataDrawer.tsx";
 import Toolbar from "@mui/material/Toolbar";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
+import {Constants} from "../../core/entities/Constants.ts";
 
 interface CardState {
     visible: boolean;
@@ -163,7 +164,7 @@ export const Home: FunctionComponent = () => {
                         <FmdGoodIcon/>
                     </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary={moment(cardState.start).format('YYYY-MM-DD HH:mm')}
+                <ListItemText primary={moment(cardState.start).format(Constants.DateFormat)}
                               secondary={cardState.placeLocation?.replace("geo:", '')}/>
             </ListItem>
         </Card>}

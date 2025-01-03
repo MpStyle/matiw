@@ -6,11 +6,13 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    FormControl, IconButton,
+    FormControl,
+    IconButton,
     InputLabel,
     MenuItem,
     Select,
-    Stack
+    Slider, SliderValueLabelProps,
+    Stack, Tooltip
 } from '@mui/material';
 import {initialHomeState, setFilters as setAppFilters} from "../slices/HomeSlice.ts";
 import {useDispatch, useSelector} from "react-redux";
@@ -21,6 +23,7 @@ import moment from "moment";
 import Typography from "@mui/material/Typography";
 import CloseIcon from '@mui/icons-material/Close';
 import Divider from '@mui/material/Divider';
+import {Constants} from "../../core/entities/Constants.ts";
 
 interface FilterDialogProps {
     open: boolean;
@@ -76,6 +79,9 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
         setMaxDate(maxDate.toString());
     }, [jsonData]);
 
+    const startDate = filters.startDate === '' ? new Date(minDate) : filters.startDate;
+    const endDate = filters.endDate === '' ? new Date(maxDate) : filters.endDate;
+
     return (
         <Dialog open={open}
                 onClose={onClose}
@@ -99,18 +105,39 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
                     color: theme.palette.grey[500],
                 })}
             >
-                <CloseIcon />
+                <CloseIcon/>
             </IconButton>
 
             <DialogContent dividers>
                 <Stack spacing={3} sx={{mt: 0}}>
                     <Typography variant="h6"><b>Date range</b></Typography>
+
+                    <Slider
+                        getAriaLabel={() => 'Date range'}
+                        value={[new Date(startDate).getTime(), new Date(endDate).getTime()]}
+                        onChange={(_, newValue) => {
+                            const value = newValue as number[];
+                            setFilters({
+                                ...filters,
+                                startDate: new Date(value[0]).toString(),
+                                endDate: new Date(value[1]).toString()
+                            });
+                        }}
+                        slots={{
+                            valueLabel: ValueLabelComponent,
+                        }}
+                        min={new Date(minDate).getTime()}
+                        max={new Date(maxDate).getTime()}
+                        valueLabelDisplay="auto"
+                        getAriaValueText={value => new Date(value).toString()}
+                    />
+
                     <Stack direction="row" spacing={1} sx={{alignItems: "baseline"}}>
                         <DatePicker
                             slotProps={{textField: {fullWidth: true}}}
                             label="Start Date"
                             name="startDate"
-                            value={filters.startDate === '' ? moment(new Date(minDate)) : moment(filters.startDate)}
+                            value={moment(startDate)}
                             onChange={e => setFilters({...filters, startDate: e ? e.toDate().toString() : ''})}
                         />
 
@@ -120,12 +147,12 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
                             slotProps={{textField: {fullWidth: true}}}
                             label="End Date"
                             name="endDate"
-                            value={filters.startDate === '' ? moment(new Date(maxDate)) : moment(filters.endDate)}
+                            value={moment(endDate)}
                             onChange={e => setFilters({...filters, endDate: e ? e.toDate().toString() : ''})}
                         />
                     </Stack>
 
-                    <Divider />
+                    <Divider/>
 
                     <Typography variant="h6"><b>Date</b></Typography>
                     <Stack direction="row" spacing={1} sx={{alignItems: "baseline"}}>
@@ -199,3 +226,17 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
 };
 
 export default FilterDialog;
+
+const ValueLabelComponent = (props: SliderValueLabelProps) => {
+    const {children, value} = props;
+
+    if(!value){
+        return null;
+    }
+
+    return (
+        <Tooltip enterTouchDelay={0} placement="top" title={moment(parseInt(value.toString())).format(Constants.DateFormat)}>
+            {children}
+        </Tooltip>
+    );
+}

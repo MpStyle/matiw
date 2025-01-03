@@ -6,6 +6,7 @@ import {VariableSizeList} from "react-window";
 import {DataItem} from "../entities/DataItem.tsx";
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
 import moment from "moment/moment";
+import {Constants} from "../../core/entities/Constants.ts";
 
 export const drawerWidth = 280;
 
@@ -75,7 +76,7 @@ const Row: FunctionComponent<{ data: RowData, index: number, style: CSSPropertie
                         <FmdGoodIcon/>
                     </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary={moment(new Date(itemData.startTime)).format('YYYY-MM-DD HH:mm')}
+                <ListItemText primary={moment(new Date(itemData.startTime)).format(Constants.DateFormat)}
                               secondary={itemData.visit?.topCandidate?.placeLocation.replace("geo:", '')}/>
             </ListItemButton>
         </ListItem>
