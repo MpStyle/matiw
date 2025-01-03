@@ -1,50 +1,42 @@
-# React + TypeScript + Vite
+# Matiw
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Matiw is a viewer for Google Maps Timeline backup files. Since Google Maps Timeline is no longer accessible via web browsers and is now only available through the mobile app with limited search functionality, Matiw aims to fill this gap.
 
-Currently, two official plugins are available:
+![Matiw Logo](public/logo-256x256.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
+- Upload Google Maps Timeline backup files.
+- Filter timeline data by:
+  - Date range.
+  - Specific dates (year, month, day, or all three).
 
-## Expanding the ESLint configuration
+## Why Matiw?
+Google Maps Timeline's mobile app lacks advanced search capabilities, making it difficult to efficiently analyze your timeline history. With Matiw, you can easily explore your timeline backups with more granular control over your searches.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## How to Export Google Maps Timeline Backup Files
+To export your Google Maps Timeline data using the iOS app:
+1. Open the app.
+2. Navigate to **App Settings**.
+3. Select **Personal Content**.
+4. Tap **Export Timeline Data**.
 
-- Configure the top-level `parserOptions` property like this:
+### Note
+Google Maps Timeline backups are no longer available through Google Takeout. Backups can only be obtained via the mobile app for privacy reasons.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Access
+You can access Matiw directly at [https://mpstyle.github.io/matiw/](https://mpstyle.github.io/matiw/).
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Future Development
+We have exciting plans to enhance Matiw with the following features:
+- **Customizable Icons:** Allow users to personalize icons and colors for places.
+- **Saved Filters:** Enable saving filter configurations with custom names for quick access.
+- **Multilingual Support:** Add support for multiple languages to make the application accessible to a global audience.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+We are also open to suggestions for further improvements! Feel free to share your ideas to help us make Matiw even better.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## License
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+Happy exploring with Matiw!
