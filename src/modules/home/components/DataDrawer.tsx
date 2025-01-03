@@ -6,7 +6,8 @@ import {VariableSizeList} from "react-window";
 import {DataItem} from "../entities/DataItem.tsx";
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
 import moment from "moment/moment";
-import {Constants} from "../../core/entities/Constants.ts";
+import {useSelector} from "react-redux";
+import {AppState} from "../../core/entities/AppState.ts";
 
 export const drawerWidth = 280;
 
@@ -66,6 +67,7 @@ interface RowData {
 }
 
 const Row: FunctionComponent<{ data: RowData, index: number, style: CSSProperties; }> = ({data, index, style}) => {
+    const dateTimeFormat = useSelector((appState: AppState) => appState.settings.dateTimeFormat);
     const itemData = data.jsonData[index];
 
     return <Box style={style}>
@@ -76,7 +78,7 @@ const Row: FunctionComponent<{ data: RowData, index: number, style: CSSPropertie
                         <FmdGoodIcon/>
                     </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary={moment(new Date(itemData.startTime)).format(Constants.DateFormat)}
+                <ListItemText primary={moment(new Date(itemData.startTime)).format(dateTimeFormat)}
                               secondary={itemData.visit?.topCandidate?.placeLocation.replace("geo:", '')}/>
             </ListItemButton>
         </ListItem>

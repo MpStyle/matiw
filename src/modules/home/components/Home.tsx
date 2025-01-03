@@ -18,7 +18,6 @@ import moment from "moment";
 import {DataDrawer, drawerWidth} from "./DataDrawer.tsx";
 import Toolbar from "@mui/material/Toolbar";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
-import {Constants} from "../../core/entities/Constants.ts";
 
 interface CardState {
     visible: boolean;
@@ -30,6 +29,7 @@ interface CardState {
 
 export const Home: FunctionComponent = () => {
     const jsonData = useSelector((appState: AppState) => appState.home.data);
+    const dateTimeFormat = useSelector((appState: AppState) => appState.settings.dateTimeFormat);
     const [filteredData, setFilteredData] = useState<DataItem[]>([]);
     const [map, setMap]= useState<Map | null>(null);
     const filters = useSelector((appState: AppState) => (appState.home.filters));
@@ -164,7 +164,7 @@ export const Home: FunctionComponent = () => {
                         <FmdGoodIcon/>
                     </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary={moment(cardState.start).format(Constants.DateFormat)}
+                <ListItemText primary={moment(cardState.start).format(dateTimeFormat)}
                               secondary={cardState.placeLocation?.replace("geo:", '')}/>
             </ListItem>
         </Card>}

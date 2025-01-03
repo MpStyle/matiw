@@ -4,12 +4,14 @@ import Typography from '@mui/material/Typography';
 import TuneIcon from '@mui/icons-material/Tune';
 import React, {Fragment, FunctionComponent, useState} from "react";
 import {UploadFile} from "@mui/icons-material";
-import {Badge, IconButton, styled, useTheme} from "@mui/material";
+import {Badge, Box, IconButton, styled, useTheme} from "@mui/material";
 import FilterDialog from "./FilterDialog.tsx";
 import {useDispatch, useSelector} from "react-redux";
 import {AppState} from "../../core/entities/AppState.ts";
 import {storeData} from "../slices/HomeSlice.ts";
 import {DataItem} from "../entities/DataItem.tsx";
+import {SettingsDialog} from "../../settings/components/SettingsDialog.tsx";
+import SettingsIcon from '@mui/icons-material/Settings';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -26,14 +28,18 @@ const VisuallyHiddenInput = styled('input')({
 export const AppBar: FunctionComponent = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
-    const [open, setOpen] = useState(false);
+    const [openFilters, setOpenFilters] = useState(false);
+    const [openSettings, setSettingsOpen] = useState(false);
     const filters = useSelector((appState: AppState) => (appState.home.filters));
     const jsonData = useSelector((appState: AppState) => appState.home.data);
     const filterCount = Object.values(filters).filter(value => value).length;
     const jsonLoaded = jsonData.length > 0;
 
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleFiltersOpen = () => setOpenFilters(true);
+    const handleFiltersClose = () => setOpenFilters(false);
+
+    const handleSettingsOpen = () => setSettingsOpen(true);
+    const handleSettingsClose = () => setSettingsOpen(false);
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -61,30 +67,42 @@ export const AppBar: FunctionComponent = () => {
                     Matiw
                 </Typography>
 
-                <IconButton component="label"
-                            role={undefined}
-                            tabIndex={-1}>
-                    <UploadFile/>
-                    <VisuallyHiddenInput
-                        type="file"
-                        accept=".json"
-                        onChange={handleFileUpload}
-                    />
-                </IconButton>
+                <Box component="div" sx={{flexGrow: 1}}>
+                    <IconButton component="label"
+                                title="Upload Google Maps Timeline JSON"
+                                role={undefined}
+                                tabIndex={-1}>
+                        <UploadFile/>
+                        <VisuallyHiddenInput
+                            type="file"
+                            accept=".json"
+                            onChange={handleFileUpload}
+                        />
+                    </IconButton>
 
-                {jsonLoaded && (
-                    <Badge badgeContent={filterCount} color="primary">
-                        <IconButton onClick={handleOpen}>
-                            <TuneIcon/>
-                        </IconButton>
-                    </Badge>
-                )}
+                    {jsonLoaded && (
+                        <Badge badgeContent={filterCount} color="primary">
+                            <IconButton onClick={handleFiltersOpen} title="Filters">
+                                <TuneIcon/>
+                            </IconButton>
+                        </Badge>
+                    )}
+                </Box>
+
+                <IconButton onClick={handleSettingsOpen} title="Settings">
+                    <SettingsIcon/>
+                </IconButton>
             </Toolbar>
         </MuiAppBar>
 
         <FilterDialog
-            open={open}
-            onClose={handleClose}
+            open={openFilters}
+            onClose={handleFiltersClose}
+        />
+
+        <SettingsDialog
+            open={openSettings}
+            onClose={handleSettingsClose}
         />
     </Fragment>;
 }

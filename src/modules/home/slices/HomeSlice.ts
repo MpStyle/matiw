@@ -20,7 +20,7 @@ export const initialHomeState: HomeState = {
 }
 
 export const homeSlice = createSlice({
-    name: 'data',
+    name: 'home',
     initialState: initialHomeState,
     reducers: {
         storeData: (state, action: PayloadAction<DataItem[]>) => {
@@ -41,16 +41,6 @@ export const homeSlice = createSlice({
             state.months = Array.from(uniqueMonths).sort((a, b) => parseInt(a) - parseInt(b));
             state.days = Array.from(uniqueDays).sort((a, b) => parseInt(a) - parseInt(b));
         },
-        clearData: (state) => {
-            state.data = [];
-        },
-        resetFilters: (state) => {
-            state.filters.startDate = initialHomeState.filters.startDate;
-            state.filters.endDate = initialHomeState.filters.endDate;
-            state.filters.year = initialHomeState.filters.year;
-            state.filters.month = initialHomeState.filters.month;
-            state.filters.day = initialHomeState.filters.day;
-        },
         setFilters: (state, action: PayloadAction<HomeFiltersState>) => {
             state.filters = action.payload;
         }
@@ -60,8 +50,6 @@ export const homeSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const {
     storeData,
-    clearData,
-    resetFilters,
     setFilters
 } = homeSlice.actions
 

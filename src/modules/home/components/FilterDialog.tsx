@@ -11,8 +11,10 @@ import {
     InputLabel,
     MenuItem,
     Select,
-    Slider, SliderValueLabelProps,
-    Stack, Tooltip
+    Slider,
+    SliderValueLabelProps,
+    Stack,
+    Tooltip
 } from '@mui/material';
 import {initialHomeState, setFilters as setAppFilters} from "../slices/HomeSlice.ts";
 import {useDispatch, useSelector} from "react-redux";
@@ -23,18 +25,15 @@ import moment from "moment";
 import Typography from "@mui/material/Typography";
 import CloseIcon from '@mui/icons-material/Close';
 import Divider from '@mui/material/Divider';
-import {Constants} from "../../core/entities/Constants.ts";
 
 interface FilterDialogProps {
     open: boolean;
     onClose: () => void;
 }
 
-const FilterDialog: React.FC<FilterDialogProps> = ({
-                                                       open,
-                                                       onClose,
-                                                   }) => {
+const FilterDialog: React.FC<FilterDialogProps> = ({open, onClose,}) => {
     const dispatch = useDispatch();
+    const jsonData = useSelector((appState: AppState) => appState.home.data);
     const [maxDate, setMaxDate] = useState<string>('');
     const [minDate, setMinDate] = useState<string>('');
     const [years, setYears] = useState<string[]>([]);
@@ -42,7 +41,6 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
     const [days, setDays] = useState<string[]>([]);
     const appFilters = useSelector((appState: AppState) => (appState.home.filters));
     const [filters, setFilters] = useState(appFilters);
-    const jsonData = useSelector((appState: AppState) => appState.home.data);
 
     useEffect(() => {
         if (!jsonData.length) {
@@ -228,14 +226,16 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
 export default FilterDialog;
 
 const ValueLabelComponent = (props: SliderValueLabelProps) => {
+    const dateTimeFormat = useSelector((appState: AppState) => appState.settings.dateTimeFormat);
     const {children, value} = props;
 
-    if(!value){
+    if (!value) {
         return null;
     }
 
     return (
-        <Tooltip enterTouchDelay={0} placement="top" title={moment(parseInt(value.toString())).format(Constants.DateFormat)}>
+        <Tooltip enterTouchDelay={0} placement="top"
+                 title={moment(parseInt(value.toString())).format(dateTimeFormat)}>
             {children}
         </Tooltip>
     );
