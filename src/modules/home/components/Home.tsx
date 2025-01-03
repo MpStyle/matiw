@@ -8,16 +8,16 @@ import {Feature} from 'ol';
 import {fromLonLat} from 'ol/proj';
 import {DataItem} from "../entities/DataItem.tsx";
 import {boundingExtent} from 'ol/extent';
-import {Box, Card, CardContent} from '@mui/material';
+import {Avatar, Box, Card, ListItem, ListItemAvatar, ListItemText} from '@mui/material';
 import {AppState} from "../../core/entities/AppState.ts";
 import {useSelector} from "react-redux";
 import {AppBar} from "./AppBar.tsx";
 import VectorLayer from "ol/layer/Vector";
 import {Icon, Style} from "ol/style";
-import Typography from "@mui/material/Typography";
 import moment from "moment";
 import {DataDrawer, drawerWidth} from "./DataDrawer.tsx";
 import Toolbar from "@mui/material/Toolbar";
+import FmdGoodIcon from "@mui/icons-material/FmdGood";
 
 interface CardState {
     visible: boolean;
@@ -29,6 +29,7 @@ interface CardState {
 
 export const Home: FunctionComponent = () => {
     const jsonData = useSelector((appState: AppState) => appState.home.data);
+    const [filteredData, setFilteredData] = useState<DataItem[]>([]);
     const filters = useSelector((appState: AppState) => (appState.home.filters));
     const [cardState, setCardState] = useState<CardState>({
         visible: false
@@ -49,7 +50,7 @@ export const Home: FunctionComponent = () => {
             }),
         });
 
-        const newFeatures = jsonData
+        const fd = jsonData
             .filter((item: DataItem) => {
                 const date = new Date(item.startTime);
                 const startDate = filters.startDate ? new Date(filters.startDate) : null;
@@ -62,7 +63,11 @@ export const Home: FunctionComponent = () => {
                     (!year || date.getFullYear() === year) &&
                     (!month || date.getMonth() + 1 === month) &&
                     (!day || date.getDate() === day);
-            })
+            });
+
+        setFilteredData(fd);
+
+        const newFeatures = fd
             .map((item: DataItem, index: number) => {
                 const location = item.visit?.topCandidate?.placeLocation;
                 if (location) {
@@ -149,14 +154,15 @@ export const Home: FunctionComponent = () => {
             position: 'absolute',
             zIndex: 1,
         }}>
-            <CardContent>
-                <Typography variant="h5" component="div">
-                    {moment(cardState.start).format('YYYY-MM-DD HH:mm')}
-                </Typography>
-                <Typography sx={{color: 'text.secondary'}}>
-                    <b>Place</b>: {cardState.placeLocation?.replace("geo:", '')}
-                </Typography>
-            </CardContent>
+            <ListItem>
+                <ListItemAvatar>
+                    <Avatar>
+                        <FmdGoodIcon/>
+                    </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={moment(cardState.start).format('YYYY-MM-DD HH:mm')}
+                              secondary={cardState.placeLocation?.replace("geo:", '')}/>
+            </ListItem>
         </Card>}
 
         <Box component="main"
@@ -165,6 +171,6 @@ export const Home: FunctionComponent = () => {
             <Box id="map" sx={{width: "100%", height: "100%"}}/>
         </Box>
 
-        {!!jsonData.length && <DataDrawer/>}
+        {!!filteredData.length && <DataDrawer jsonData={filteredData}/>}
     </Box>;
 };

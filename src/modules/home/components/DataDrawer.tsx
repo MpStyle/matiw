@@ -1,7 +1,5 @@
-import React, {CSSProperties, FunctionComponent} from "react";
-import {useSelector} from "react-redux";
-import {AppState} from "../../core/entities/AppState.ts";
-import {Avatar, Box, Drawer, ListItem, ListItemAvatar, ListItemText, useTheme} from "@mui/material";
+import {CSSProperties, FunctionComponent} from "react";
+import {Avatar, Box, Drawer, ListItem, ListItemAvatar, ListItemText} from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {VariableSizeList} from "react-window";
@@ -11,9 +9,7 @@ import moment from "moment/moment";
 
 export const drawerWidth = 240;
 
-export const DataDrawer: FunctionComponent = () => {
-    const jsonData = useSelector((appState: AppState) => appState.home.data);
-
+export const DataDrawer: FunctionComponent<{ jsonData: DataItem[] }> = ({jsonData}) => {
     return <Drawer
         sx={{
             width: drawerWidth,
@@ -37,7 +33,6 @@ export const DataDrawer: FunctionComponent = () => {
 const rowHeight = 85;
 
 const Row: FunctionComponent<{ data: DataItem[], index: number, style: CSSProperties; }> = ({data, index, style}) => {
-    const theme = useTheme();
     const itemData = data[index];
 
     return <Box style={style}>
@@ -50,20 +45,6 @@ const Row: FunctionComponent<{ data: DataItem[], index: number, style: CSSProper
             <ListItemText primary={moment(new Date(itemData.startTime)).format('YYYY-MM-DD HH:mm')}
                           secondary={itemData.visit?.topCandidate?.placeLocation.replace("geo:", '')}/>
         </ListItem>
-
-        {/*<Box sx={{*/}
-        {/*    p: 1,*/}
-        {/*    '&:hover': {*/}
-        {/*        backgroundColor: theme.palette.action.hover*/}
-        {/*    }*/}
-        {/*}}>*/}
-        {/*    <Typography variant="body1" component="div">*/}
-        {/*        {moment(new Date(itemData.startTime)).format('YYYY-MM-DD HH:mm')}*/}
-        {/*    </Typography>*/}
-        {/*    <Typography variant="subtitle1" sx={{color: 'text.secondary'}}>*/}
-        {/*        <b>Place</b>: {itemData.visit?.topCandidate?.placeLocation.replace("geo:", '')}*/}
-        {/*    </Typography>*/}
-        {/*</Box>*/}
     </Box>;
 };
 
