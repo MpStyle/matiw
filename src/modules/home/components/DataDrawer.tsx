@@ -1,5 +1,15 @@
-import {CSSProperties, FunctionComponent} from "react";
-import {Avatar, Box, Drawer, ListItem, ListItemAvatar, ListItemButton, ListItemText} from "@mui/material";
+import {CSSProperties, FunctionComponent, useState} from "react";
+import {
+    Avatar,
+    Box,
+    Drawer,
+    IconButton,
+    ListItem,
+    ListItemAvatar,
+    ListItemButton,
+    ListItemText,
+    Stack
+} from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {VariableSizeList} from "react-window";
@@ -8,6 +18,9 @@ import moment from "moment/moment";
 import {useSelector} from "react-redux";
 import {AppState} from "../../core/entities/AppState.ts";
 import {Logo} from "../../filters/components/Logo.tsx";
+import SortIcon from '@mui/icons-material/Sort';
+import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
 
 export const drawerWidth = 280;
 
@@ -17,6 +30,8 @@ export interface DataDrawerProps {
 }
 
 export const DataDrawer: FunctionComponent<DataDrawerProps> = ({jsonData, onLocationClick}) => {
+    const [ascendingSort, setAscendingSort] = useState(true);
+
     return <Drawer
         sx={{
             width: drawerWidth,
@@ -31,8 +46,23 @@ export const DataDrawer: FunctionComponent<DataDrawerProps> = ({jsonData, onLoca
         anchor="right">
         <Toolbar/>
 
-        <Box sx={{height: `calc(100% - 64px)`}}>
-            <ReactWindowList jsonData={jsonData} onLocationClick={onLocationClick}/>
+        <Stack direction="row" sx={{height: '40px', alignItems: 'center', p: 1}}>
+            <Typography sx={{flex: 1}} variant="subtitle2">
+                {jsonData.length} {jsonData.length === 1 ? 'location' : 'locations'}
+            </Typography>
+            <IconButton aria-label="toggle sort by date"
+                        title={"Toggle sort by date"}
+                        size={"small"}
+                        onClick={() => setAscendingSort(!ascendingSort)}>
+                <SortIcon/>
+            </IconButton>
+        </Stack>
+
+        <Divider/>
+
+        <Box sx={{height: `calc(100% - 64px - 40px)`}}>
+            <ReactWindowList jsonData={ascendingSort ? jsonData : [...jsonData].reverse()}
+                             onLocationClick={onLocationClick}/>
         </Box>
     </Drawer>;
 }
@@ -45,6 +75,8 @@ interface ReactWindowListProps {
 }
 
 const ReactWindowList: FunctionComponent<ReactWindowListProps> = ({jsonData, onLocationClick}) => {
+    console.log(JSON.stringify(jsonData));
+
     return <AutoSizer>
         {({height, width}) => (
             <VariableSizeList
