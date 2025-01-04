@@ -2,12 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {
     Box,
     Button,
-    Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle,
     FormControl,
-    IconButton,
     InputLabel,
     MenuItem,
     Select,
@@ -23,9 +20,9 @@ import {DataItem} from "../../home/entities/DataItem.tsx";
 import {DatePicker} from "@mui/x-date-pickers";
 import moment from "moment";
 import Typography from "@mui/material/Typography";
-import CloseIcon from '@mui/icons-material/Close';
 import Divider from '@mui/material/Divider';
 import {initialFiltersState} from "../slices/FiltersSlice.ts";
+import {MDialog} from "../../core/components/MDialog.tsx";
 
 interface FilterDialogProps {
     open: boolean;
@@ -81,147 +78,121 @@ const FilterDialog: React.FC<FilterDialogProps> = ({open, onClose,}) => {
     const startDate = filters.startDate === '' ? new Date(minDate) : filters.startDate;
     const endDate = filters.endDate === '' ? new Date(maxDate) : filters.endDate;
 
-    return (
-        <Dialog open={open}
-                onClose={onClose}
-                fullWidth
-                maxWidth="md">
-            <DialogTitle sx={{
-                textAlign: "center",
-                fontSize: "1em",
-                fontWeight: "bold"
-            }}>
-                Filters
-            </DialogTitle>
+    return <MDialog open={open} onClose={onClose} fullWidth maxWidth="md" title="Filters">
+        <DialogContent dividers>
+            <Stack spacing={3} sx={{mt: 0}}>
+                <Typography variant="h6"><b>Date range</b></Typography>
 
-            <IconButton
-                aria-label="close"
-                onClick={onClose}
-                sx={(theme) => ({
-                    position: 'absolute',
-                    right: 8,
-                    top: 8,
-                    color: theme.palette.grey[500],
-                })}
-            >
-                <CloseIcon/>
-            </IconButton>
+                <Slider
+                    getAriaLabel={() => 'Date range'}
+                    value={[new Date(startDate).getTime(), new Date(endDate).getTime()]}
+                    onChange={(_, newValue) => {
+                        const value = newValue as number[];
+                        setFilters({
+                            ...filters,
+                            startDate: new Date(value[0]).toString(),
+                            endDate: new Date(value[1]).toString()
+                        });
+                    }}
+                    slots={{
+                        valueLabel: ValueLabelComponent,
+                    }}
+                    min={new Date(minDate).getTime()}
+                    max={new Date(maxDate).getTime()}
+                    valueLabelDisplay="auto"
+                    getAriaValueText={value => new Date(value).toString()}
+                />
 
-            <DialogContent dividers>
-                <Stack spacing={3} sx={{mt: 0}}>
-                    <Typography variant="h6"><b>Date range</b></Typography>
-
-                    <Slider
-                        getAriaLabel={() => 'Date range'}
-                        value={[new Date(startDate).getTime(), new Date(endDate).getTime()]}
-                        onChange={(_, newValue) => {
-                            const value = newValue as number[];
-                            setFilters({
-                                ...filters,
-                                startDate: new Date(value[0]).toString(),
-                                endDate: new Date(value[1]).toString()
-                            });
-                        }}
-                        slots={{
-                            valueLabel: ValueLabelComponent,
-                        }}
-                        min={new Date(minDate).getTime()}
-                        max={new Date(maxDate).getTime()}
-                        valueLabelDisplay="auto"
-                        getAriaValueText={value => new Date(value).toString()}
+                <Stack direction="row" spacing={1} sx={{alignItems: "baseline"}}>
+                    <DatePicker
+                        slotProps={{textField: {fullWidth: true}}}
+                        label="Start Date"
+                        name="startDate"
+                        value={moment(startDate)}
+                        onChange={e => setFilters({...filters, startDate: e ? e.toDate().toString() : ''})}
                     />
 
-                    <Stack direction="row" spacing={1} sx={{alignItems: "baseline"}}>
-                        <DatePicker
-                            slotProps={{textField: {fullWidth: true}}}
-                            label="Start Date"
-                            name="startDate"
-                            value={moment(startDate)}
-                            onChange={e => setFilters({...filters, startDate: e ? e.toDate().toString() : ''})}
-                        />
+                    <Box>-</Box>
 
-                        <Box>-</Box>
-
-                        <DatePicker
-                            slotProps={{textField: {fullWidth: true}}}
-                            label="End Date"
-                            name="endDate"
-                            value={moment(endDate)}
-                            onChange={e => setFilters({...filters, endDate: e ? e.toDate().toString() : ''})}
-                        />
-                    </Stack>
-
-                    <Divider/>
-
-                    <Typography variant="h6"><b>Date</b></Typography>
-                    <Stack direction="row" spacing={1} sx={{alignItems: "baseline"}}>
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-standard-label">Year</InputLabel>
-                            <Select
-                                label="Year"
-                                name="year"
-                                value={filters.year}
-                                onChange={e => setFilters({...filters, year: e.target.value})}
-                                fullWidth>
-                                <MenuItem value={initialFiltersState.year}><em>&nbsp;</em></MenuItem>
-                                {years.map(year => (
-                                    <MenuItem key={year} value={year}>
-                                        {year}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-
-                        <Box>/</Box>
-
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-standard-label">Month</InputLabel>
-                            <Select
-                                label="Month"
-                                name="month"
-                                value={filters.month}
-                                onChange={e => setFilters({...filters, month: e.target.value})}
-                                fullWidth>
-                                <MenuItem value={initialFiltersState.month}><em>&nbsp;</em></MenuItem>
-                                {months.map(month => (
-                                    <MenuItem key={month} value={month}>
-                                        {month}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-
-                        <Box>/</Box>
-
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-standard-label">Day</InputLabel>
-                            <Select
-                                label="Day"
-                                name="day"
-                                value={filters.day}
-                                onChange={e => setFilters({...filters, day: e.target.value})}>
-                                <MenuItem value={initialFiltersState.day}><em>&nbsp;</em></MenuItem>
-                                {days.map(day => (
-                                    <MenuItem key={day} value={day}>
-                                        {day}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Stack>
+                    <DatePicker
+                        slotProps={{textField: {fullWidth: true}}}
+                        label="End Date"
+                        name="endDate"
+                        value={moment(endDate)}
+                        onChange={e => setFilters({...filters, endDate: e ? e.toDate().toString() : ''})}
+                    />
                 </Stack>
-            </DialogContent>
-            <DialogActions>
-                <Button variant="contained" onClick={() => {
-                    dispatch(setAppFilters(filters));
 
-                    onClose();
-                }}>
-                    Search
-                </Button>
-            </DialogActions>
-        </Dialog>
-    );
+                <Divider/>
+
+                <Typography variant="h6"><b>Date</b></Typography>
+                <Stack direction="row" spacing={1} sx={{alignItems: "baseline"}}>
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-standard-label">Year</InputLabel>
+                        <Select
+                            label="Year"
+                            name="year"
+                            value={filters.year}
+                            onChange={e => setFilters({...filters, year: e.target.value})}
+                            fullWidth>
+                            <MenuItem value={initialFiltersState.year}><em>&nbsp;</em></MenuItem>
+                            {years.map(year => (
+                                <MenuItem key={year} value={year}>
+                                    {year}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
+                    <Box>/</Box>
+
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-standard-label">Month</InputLabel>
+                        <Select
+                            label="Month"
+                            name="month"
+                            value={filters.month}
+                            onChange={e => setFilters({...filters, month: e.target.value})}
+                            fullWidth>
+                            <MenuItem value={initialFiltersState.month}><em>&nbsp;</em></MenuItem>
+                            {months.map(month => (
+                                <MenuItem key={month} value={month}>
+                                    {month}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
+                    <Box>/</Box>
+
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-standard-label">Day</InputLabel>
+                        <Select
+                            label="Day"
+                            name="day"
+                            value={filters.day}
+                            onChange={e => setFilters({...filters, day: e.target.value})}>
+                            <MenuItem value={initialFiltersState.day}><em>&nbsp;</em></MenuItem>
+                            {days.map(day => (
+                                <MenuItem key={day} value={day}>
+                                    {day}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Stack>
+            </Stack>
+        </DialogContent>
+        <DialogActions>
+            <Button variant="contained" onClick={() => {
+                dispatch(setAppFilters(filters));
+
+                onClose();
+            }}>
+                Search
+            </Button>
+        </DialogActions>
+    </MDialog>;
 };
 
 export default FilterDialog;

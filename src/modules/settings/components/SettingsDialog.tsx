@@ -1,20 +1,10 @@
 import {FunctionComponent} from "react";
-import {
-    Dialog,
-    DialogContent,
-    DialogTitle,
-    FormControl,
-    IconButton,
-    InputLabel,
-    MenuItem,
-    Select,
-    Stack
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import {DialogContent, FormControl, InputLabel, MenuItem, Select, Stack} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {useDispatch, useSelector} from "react-redux";
 import {AppState} from "../../core/entities/AppState.ts";
 import {setDateTimeFormat} from "../slices/SettingsSlice.ts";
+import {MDialog} from "../../core/components/MDialog.tsx";
 
 export interface SettingsDialogProps {
     open: boolean;
@@ -25,31 +15,11 @@ export const SettingsDialog: FunctionComponent<SettingsDialogProps> = ({open, on
     const settings = useSelector((appState: AppState) => appState.settings);
     const dispatch = useDispatch();
 
-    return <Dialog open={open}
-                   onClose={onClose}
-                   fullWidth
-                   maxWidth="sm">
-        <DialogTitle sx={{
-            textAlign: "center",
-            fontSize: "1em",
-            fontWeight: "bold"
-        }}>
-            Settings
-        </DialogTitle>
-
-        <IconButton
-            aria-label="close"
-            onClick={onClose}
-            sx={(theme) => ({
-                position: 'absolute',
-                right: 8,
-                top: 8,
-                color: theme.palette.grey[500],
-            })}
-        >
-            <CloseIcon/>
-        </IconButton>
-
+    return <MDialog open={open}
+                    onClose={onClose}
+                    fullWidth
+                    maxWidth="sm"
+                    title="Settings">
         <DialogContent dividers>
             <Stack spacing={3} sx={{mt: 0}}>
                 <Typography variant="h6"><b>Date time format</b></Typography>
@@ -60,7 +30,7 @@ export const SettingsDialog: FunctionComponent<SettingsDialogProps> = ({open, on
                         id="date-time-format-select"
                         value={settings.dateTimeFormat}
                         label="Date time format"
-                        onChange={e=>dispatch(setDateTimeFormat(e.target.value))}>
+                        onChange={e => dispatch(setDateTimeFormat(e.target.value))}>
                         <MenuItem value="DD/MM/YYYY HH:mm">DD/MM/YYYY HH:mm</MenuItem>
                         <MenuItem value="MM/DD/YYYY HH:mm">MM/DD/YYYY HH:mm</MenuItem>
                         <MenuItem value="YYYY/MM/DD HH:mm">YYYY/MM/DD HH:mm</MenuItem>
@@ -68,5 +38,5 @@ export const SettingsDialog: FunctionComponent<SettingsDialogProps> = ({open, on
                 </FormControl>
             </Stack>
         </DialogContent>
-    </Dialog>
+    </MDialog>
 }
