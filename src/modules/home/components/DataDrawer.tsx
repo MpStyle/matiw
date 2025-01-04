@@ -75,8 +75,6 @@ interface ReactWindowListProps {
 }
 
 const ReactWindowList: FunctionComponent<ReactWindowListProps> = ({jsonData, onLocationClick}) => {
-    console.log(JSON.stringify(jsonData));
-
     return <AutoSizer>
         {({height, width}) => (
             <VariableSizeList
