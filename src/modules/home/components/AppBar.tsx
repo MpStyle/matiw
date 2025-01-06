@@ -1,15 +1,12 @@
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import TuneIcon from '@mui/icons-material/Tune';
 import React, {Fragment, FunctionComponent, useState} from "react";
 import {UploadFile} from "@mui/icons-material";
-import {Badge, Box, IconButton, styled, useTheme} from "@mui/material";
-import FilterDialog from "../../filters/components/FilterDialog.tsx";
-import {useDispatch, useSelector} from "react-redux";
-import {AppState} from "../../core/entities/AppState.ts";
+import {IconButton, styled, useTheme} from "@mui/material";
+import {useDispatch} from "react-redux";
 import {storeData} from "../slices/HomeSlice.ts";
-import {DataItem} from "../entities/DataItem.tsx";
+import {DataItem} from "../entities/DataItem.ts";
 import {SettingsDialog} from "../../settings/components/SettingsDialog.tsx";
 import SettingsIcon from '@mui/icons-material/Settings';
 import {Logo} from "../../filters/components/Logo.tsx";
@@ -29,15 +26,7 @@ const VisuallyHiddenInput = styled('input')({
 export const AppBar: FunctionComponent = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
-    const [openFilters, setOpenFilters] = useState(false);
     const [openSettings, setSettingsOpen] = useState(false);
-    const filters = useSelector((appState: AppState) => (appState.filters));
-    const jsonData = useSelector((appState: AppState) => appState.home.data);
-    const filterCount = Object.values(filters).filter(value => value).length;
-    const jsonLoaded = jsonData.length > 0;
-
-    const handleFiltersOpen = () => setOpenFilters(true);
-    const handleFiltersClose = () => setOpenFilters(false);
 
     const handleSettingsOpen = () => setSettingsOpen(true);
     const handleSettingsClose = () => setSettingsOpen(false);
@@ -81,38 +70,23 @@ export const AppBar: FunctionComponent = () => {
                     Matiw
                 </Typography>
 
-                <Box component="div" sx={{flexGrow: 1}}>
-                    <IconButton component="label"
-                                title="Upload Google Maps Timeline JSON"
-                                role={undefined}
-                                tabIndex={-1}>
-                        <UploadFile/>
-                        <VisuallyHiddenInput
-                            type="file"
-                            accept=".json"
-                            onChange={handleFileUpload}
-                        />
-                    </IconButton>
-
-                    {jsonLoaded && (
-                        <Badge badgeContent={filterCount} color="primary">
-                            <IconButton onClick={handleFiltersOpen} title="Filters">
-                                <TuneIcon/>
-                            </IconButton>
-                        </Badge>
-                    )}
-                </Box>
+                <IconButton component="label"
+                            title="Upload Google Maps Timeline JSON"
+                            role={undefined}
+                            tabIndex={-1}>
+                    <UploadFile/>
+                    <VisuallyHiddenInput
+                        type="file"
+                        accept=".json"
+                        onChange={handleFileUpload}
+                    />
+                </IconButton>
 
                 <IconButton onClick={handleSettingsOpen} title="Settings">
                     <SettingsIcon/>
                 </IconButton>
             </Toolbar>
         </MuiAppBar>
-
-        <FilterDialog
-            open={openFilters}
-            onClose={handleFiltersClose}
-        />
 
         <SettingsDialog
             open={openSettings}

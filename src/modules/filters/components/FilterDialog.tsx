@@ -16,7 +16,7 @@ import {
 import {setFilters as setAppFilters} from "../../filters/slices/FiltersSlice.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {AppState} from "../../core/entities/AppState.ts";
-import {DataItem} from "../../home/entities/DataItem.tsx";
+import {DataItem} from "../../home/entities/DataItem.ts";
 import {DatePicker} from "@mui/x-date-pickers";
 import moment from "moment";
 import Typography from "@mui/material/Typography";

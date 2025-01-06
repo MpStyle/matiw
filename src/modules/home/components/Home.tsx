@@ -6,36 +6,33 @@ import {OSM, Vector as VectorSource} from 'ol/source';
 import {Point} from 'ol/geom';
 import {Feature} from 'ol';
 import {fromLonLat} from 'ol/proj';
-import {DataItem} from "../entities/DataItem.tsx";
+import {DataItem} from "../entities/DataItem.ts";
 import {boundingExtent} from 'ol/extent';
-import {Avatar, Box, Card, ListItem, ListItemAvatar, ListItemText} from '@mui/material';
+import {Box} from '@mui/material';
 import {AppState} from "../../core/entities/AppState.ts";
 import {useSelector} from "react-redux";
 import {AppBar} from "./AppBar.tsx";
 import VectorLayer from "ol/layer/Vector";
-import {Icon, Style} from "ol/style";
-import moment from "moment";
+import {Fill, Icon, Style, Text} from "ol/style";
 import {DataDrawer, drawerWidth} from "./DataDrawer.tsx";
 import Toolbar from "@mui/material/Toolbar";
-import {Logo} from "../../filters/components/Logo.tsx";
+import {LocationOverview} from "../../core/components/LocationOverview.tsx";
+import {MDefaultIconColor, MIcons} from "../../core/book/MIcon.ts";
 
 interface CardState {
-    visible: boolean;
+    // visible: boolean;
     top?: number;
     left?: number;
-    start?: string;
-    placeLocation?: string;
+    itemData?: DataItem;
 }
 
 export const Home: FunctionComponent = () => {
     const jsonData = useSelector((appState: AppState) => appState.home.data);
-    const dateTimeFormat = useSelector((appState: AppState) => appState.settings.dateTimeFormat);
     const [filteredData, setFilteredData] = useState<DataItem[]>([]);
-    const [map, setMap]= useState<Map | null>(null);
+    const [map, setMap] = useState<Map | null>(null);
     const filters = useSelector((appState: AppState) => (appState.filters));
-    const [cardState, setCardState] = useState<CardState>({
-        visible: false
-    });
+    const [cardState, setCardState] = useState<CardState>({});
+    const customLocations = useSelector((appState: AppState) => appState.customLocations);
 
     useEffect(() => {
         const vectorSource = new VectorSource();
@@ -82,15 +79,25 @@ export const Home: FunctionComponent = () => {
                             geometry: new Point(fromLonLat([parseFloat(lng), parseFloat(lat)])),
                         });
 
+                        const customLocation = location && location in customLocations.data ? customLocations.data[location] : null;
+
                         const iconStyle = new Style({
-                            image: new Icon({
+                            image: !customLocation ? new Icon({
                                 anchor: [0.5, 46],
                                 width: 30,
                                 height: 30,
                                 anchorXUnits: 'fraction',
                                 anchorYUnits: 'pixels',
                                 src: 'logo-256x256.png',
-                            }),
+                            }) : undefined,
+                            text: customLocation && customLocation.iconName ? new Text({
+                                text: MIcons[customLocation.iconName],
+                                font: 'normal 30px "Material Icons"',
+                                textBaseline: "bottom",
+                                fill: new Fill({
+                                    color: customLocation.iconColor ?? MDefaultIconColor,
+                                })
+                            }) : undefined
                         });
 
                         feature.setId(index);
@@ -118,7 +125,7 @@ export const Home: FunctionComponent = () => {
             map.on('pointermove', function (evt) {
                 if (evt.dragging) {
                     setCardState({
-                        visible: false,
+                        itemData: undefined,
                     })
                 }
 
@@ -130,15 +137,13 @@ export const Home: FunctionComponent = () => {
                     const index = selectedFeature.getId() ? selectedFeature.getId() as number : 0;
                     const selectedData = jsonData[index];
                     setCardState({
-                        visible: true,
                         top: evt.pixel[1],
                         left: evt.pixel[0],
-                        start: selectedData.startTime,
-                        placeLocation: selectedData.visit?.topCandidate?.placeLocation,
+                        itemData: selectedData,
                     })
                 } else {
                     setCardState({
-                        visible: false,
+                        itemData: undefined,
                     })
                 }
             });
@@ -147,27 +152,20 @@ export const Home: FunctionComponent = () => {
         return () => {
             map.setTarget(undefined);
         };
-    }, [jsonData, filters]);
+    }, [jsonData, filters, customLocations]);
 
     return <Box sx={{height: '100%'}}>
         <AppBar/>
 
-        {cardState.visible && <Card variant="outlined" sx={{
-            top: cardState.top,
-            left: cardState.left,
-            position: 'absolute',
-            zIndex: 1,
-        }}>
-            <ListItem>
-                <ListItemAvatar>
-                    <Avatar sx={{backgroundColor: 'rgba(0,0,0,0)'}}>
-                        <Logo sx={{width: 48, height: 48}}/>
-                    </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={moment(cardState.start).format(dateTimeFormat)}
-                              secondary={cardState.placeLocation?.replace("geo:", '')}/>
-            </ListItem>
-        </Card>}
+        {!!cardState.itemData && <LocationOverview itemData={cardState.itemData}
+                                                   style={{
+                                                       top: cardState.top,
+                                                       left: cardState.left,
+                                                       position: 'absolute',
+                                                       zIndex: 1,
+                                                       backgroundColor: '#fff'
+                                                   }}
+                                                   itemHeight={48}/>}
 
         <Box component="main"
              sx={{width: `calc(100% - ${jsonData.length ? drawerWidth : 0}px)`, height: 'calc(100% - 64px)'}}>
@@ -175,7 +173,7 @@ export const Home: FunctionComponent = () => {
             <Box id="map" sx={{width: "100%", height: "100%"}}/>
         </Box>
 
-        {!!filteredData.length && <DataDrawer jsonData={filteredData} onLocationClick={coordinate=>{
+        {!!filteredData.length && <DataDrawer jsonData={filteredData} onLocationClick={coordinate => {
             if (map && coordinate) {
                 const match = coordinate.match(/geo:(-?\d+\.\d+),(-?\d+\.\d+)/);
                 if (match) {

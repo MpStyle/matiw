@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {DataItem} from "../entities/DataItem.tsx";
+import {DataItem} from "../entities/DataItem.ts";
 import {HomeState} from "../entities/HomeState.ts";
 
 export const initialHomeState: HomeState = {

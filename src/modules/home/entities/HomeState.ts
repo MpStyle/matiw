@@ -1,4 +1,4 @@
-import {DataItem} from "./DataItem.tsx";
+import {DataItem} from "./DataItem.ts";
 
 export interface HomeState {
     data: DataItem[];

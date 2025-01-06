@@ -1,5 +1,5 @@
-import {Visit} from "./Visit.tsx";
-import {Activity} from "./Activity.tsx";
+import {Visit} from "./Visit.ts";
+import {Activity} from "./Activity.ts";
 
 export interface DataItem {
     endTime: string;

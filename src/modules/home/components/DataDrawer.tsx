@@ -1,28 +1,19 @@
-import {CSSProperties, FunctionComponent, useState} from "react";
-import {
-    Avatar,
-    Box,
-    Drawer,
-    IconButton,
-    ListItem,
-    ListItemAvatar,
-    ListItemButton,
-    ListItemText,
-    Stack
-} from "@mui/material";
+import {CSSProperties, Fragment, FunctionComponent, useState} from "react";
+import {Badge, Box, Drawer, IconButton, Stack} from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {VariableSizeList} from "react-window";
-import {DataItem} from "../entities/DataItem.tsx";
-import moment from "moment/moment";
-import {useSelector} from "react-redux";
-import {AppState} from "../../core/entities/AppState.ts";
-import {Logo} from "../../filters/components/Logo.tsx";
+import {DataItem} from "../entities/DataItem.ts";
 import SortIcon from '@mui/icons-material/Sort';
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
+import {LocationOverview} from "../../core/components/LocationOverview.tsx";
+import TuneIcon from "@mui/icons-material/Tune";
+import {useSelector} from "react-redux";
+import {AppState} from "../../core/entities/AppState.ts";
+import FilterDialog from "../../filters/components/FilterDialog.tsx";
 
-export const drawerWidth = 280;
+export const drawerWidth = 300;
 
 export interface DataDrawerProps {
     jsonData: DataItem[];
@@ -31,40 +22,61 @@ export interface DataDrawerProps {
 
 export const DataDrawer: FunctionComponent<DataDrawerProps> = ({jsonData, onLocationClick}) => {
     const [ascendingSort, setAscendingSort] = useState(true);
+    const [openFilters, setOpenFilters] = useState(false);
+    const filters = useSelector((appState: AppState) => (appState.filters));
+    const filterCount = Object.values(filters).filter(value => value).length;
 
-    return <Drawer
-        sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
+    const handleFiltersOpen = () => setOpenFilters(true);
+    const handleFiltersClose = () => setOpenFilters(false);
+
+    return <Fragment>
+        <Drawer
+            sx={{
                 width: drawerWidth,
-                boxSizing: 'border-box',
-            },
-            zIndex: 9
-        }}
-        variant="permanent"
-        anchor="right">
-        <Toolbar/>
+                flexShrink: 0,
+                '& .MuiDrawer-paper': {
+                    width: drawerWidth,
+                    boxSizing: 'border-box',
+                },
+                zIndex: 9
+            }}
+            variant="permanent"
+            anchor="right">
+            <Toolbar/>
 
-        <Stack direction="row" sx={{height: '40px', alignItems: 'center', p: 1}}>
-            <Typography sx={{flex: 1}} variant="subtitle2">
-                {jsonData.length} {jsonData.length === 1 ? 'location' : 'locations'}
-            </Typography>
-            <IconButton aria-label="toggle sort by date"
-                        title={"Toggle sort by date"}
-                        size={"small"}
-                        onClick={() => setAscendingSort(!ascendingSort)}>
-                <SortIcon/>
-            </IconButton>
-        </Stack>
+            <Stack direction="row" sx={{height: '65px', alignItems: 'center', p: 2}}>
+                <Typography sx={{flex: 1}} variant="subtitle2">
+                    {jsonData.length} {jsonData.length === 1 ? 'location' : 'locations'}
+                </Typography>
 
-        <Divider/>
+                <IconButton aria-label="toggle sort by date"
+                            title={"Toggle sort by date"}
+                            size={"small"}
+                            sx={{transform: ascendingSort ? "scale(1, -1)" : null}}
+                            onClick={() => setAscendingSort(!ascendingSort)}>
+                    <SortIcon/>
+                </IconButton>
 
-        <Box sx={{height: `calc(100% - 64px - 40px)`}}>
-            <ReactWindowList jsonData={ascendingSort ? jsonData : [...jsonData].reverse()}
-                             onLocationClick={onLocationClick}/>
-        </Box>
-    </Drawer>;
+                <Badge badgeContent={filterCount} color="primary">
+                    <IconButton onClick={handleFiltersOpen} title="Filters" size="small">
+                        <TuneIcon/>
+                    </IconButton>
+                </Badge>
+            </Stack>
+
+            <Divider/>
+
+            <Box sx={{height: `calc(100% - 64px - 65px)`}}>
+                <ReactWindowList jsonData={ascendingSort ? jsonData : [...jsonData].reverse()}
+                                 onLocationClick={onLocationClick}/>
+            </Box>
+        </Drawer>
+
+        <FilterDialog
+            open={openFilters}
+            onClose={handleFiltersClose}
+        />
+    </Fragment>;
 }
 
 const rowHeight = 85;
@@ -96,21 +108,12 @@ interface RowData {
     onLocationClick: (coordinate?: string) => void;
 }
 
-const Row: FunctionComponent<{ data: RowData, index: number, style: CSSProperties; }> = ({data, index, style}) => {
-    const dateTimeFormat = useSelector((appState: AppState) => appState.settings.dateTimeFormat);
-    const itemData = data.jsonData[index];
+const ITEM_HEIGHT = 48;
 
-    return <Box style={style}>
-        <ListItem disablePadding>
-            <ListItemButton onClick={() => data.onLocationClick(itemData.visit?.topCandidate?.placeLocation)}>
-                <ListItemAvatar>
-                    <Avatar sx={{backgroundColor: 'rgba(0,0,0,0)'}}>
-                        <Logo sx={{width: 48, height: 48}}/>
-                    </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={moment(new Date(itemData.startTime)).format(dateTimeFormat)}
-                              secondary={itemData.visit?.topCandidate?.placeLocation.replace("geo:", '')}/>
-            </ListItemButton>
-        </ListItem>
-    </Box>;
+const Row: FunctionComponent<{ data: RowData, index: number, style: CSSProperties; }> = ({data, index, style}) => {
+    const itemData = data.jsonData[index];
+    return <LocationOverview itemData={itemData}
+                             style={style}
+                             onLocationClick={data.onLocationClick}
+                             itemHeight={ITEM_HEIGHT}/>;
 };
