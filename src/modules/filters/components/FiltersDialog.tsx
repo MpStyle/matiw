@@ -29,9 +29,10 @@ interface FilterDialogProps {
     onClose: () => void;
 }
 
-const FilterDialog: React.FC<FilterDialogProps> = ({open, onClose,}) => {
+const FiltersDialog: React.FC<FilterDialogProps> = ({open, onClose,}) => {
     const dispatch = useDispatch();
     const jsonData = useSelector((appState: AppState) => appState.home.data);
+    const settings = useSelector((appState: AppState) => appState.settings);
     const [maxDate, setMaxDate] = useState<string>('');
     const [minDate, setMinDate] = useState<string>('');
     const [years, setYears] = useState<string[]>([]);
@@ -105,7 +106,13 @@ const FilterDialog: React.FC<FilterDialogProps> = ({open, onClose,}) => {
 
                 <Stack direction="row" spacing={1} sx={{alignItems: "baseline"}}>
                     <DatePicker
-                        slotProps={{textField: {fullWidth: true}}}
+                        slotProps={{
+                            textField: {
+                                fullWidth: true,
+                                helperText: settings.dateFormat
+                            }
+                        }}
+                        format={settings.dateFormat}
                         label="Start Date"
                         name="startDate"
                         value={moment(startDate)}
@@ -115,7 +122,13 @@ const FilterDialog: React.FC<FilterDialogProps> = ({open, onClose,}) => {
                     <Box>-</Box>
 
                     <DatePicker
-                        slotProps={{textField: {fullWidth: true}}}
+                        slotProps={{
+                            textField: {
+                                fullWidth: true,
+                                helperText: settings.dateFormat
+                            }
+                        }}
+                        format={settings.dateFormat}
                         label="End Date"
                         name="endDate"
                         value={moment(endDate)}
@@ -195,7 +208,7 @@ const FilterDialog: React.FC<FilterDialogProps> = ({open, onClose,}) => {
     </MDialog>;
 };
 
-export default FilterDialog;
+export default FiltersDialog;
 
 const ValueLabelComponent = (props: SliderValueLabelProps) => {
     const dateTimeFormat = useSelector((appState: AppState) => appState.settings.dateTimeFormat);

@@ -11,7 +11,7 @@ import {LocationOverview} from "../../core/components/LocationOverview.tsx";
 import TuneIcon from "@mui/icons-material/Tune";
 import {useSelector} from "react-redux";
 import {AppState} from "../../core/entities/AppState.ts";
-import FilterDialog from "../../filters/components/FilterDialog.tsx";
+import FiltersDialog from "../../filters/components/FiltersDialog.tsx";
 
 export const drawerWidth = 300;
 
@@ -72,7 +72,7 @@ export const DataDrawer: FunctionComponent<DataDrawerProps> = ({jsonData, onLoca
             </Box>
         </Drawer>
 
-        <FilterDialog
+        <FiltersDialog
             open={openFilters}
             onClose={handleFiltersClose}
         />
