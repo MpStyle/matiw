@@ -11,7 +11,7 @@ export const Logo: FunctionComponent<LogoProps> = props => {
     return <SvgIcon
         component="svg"
         viewBox="0 0 24 24"
-        sx={{...(props.sx ?? {})}}>
+        sx={{...(props.sx ?? {}), display: 'inline-block'}}>
         <defs>
             <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" style={{stopColor: "#45cbff", stopOpacity: 1}}/>
