@@ -53,6 +53,7 @@ export const EditLocationDialog: FunctionComponent<EditLocationDialogProps> = pr
             <TextField label="Location name"
                        variant="outlined"
                        fullWidth
+                       value={customLocation?.name}
                        onChange={e => setCustomLocation({
                            ...customLocation,
                            name: e.target.value
