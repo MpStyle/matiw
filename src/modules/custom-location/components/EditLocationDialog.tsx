@@ -73,7 +73,7 @@ export const EditLocationDialog: FunctionComponent<EditLocationDialogProps> = pr
             <Stack spacing={2}>
                 <Stack direction="row" spacing={2}>
                     <Box>
-                        {MIconGroups.map((group, index) => {
+                        {MIconGroups.map((group) => {
                             return <Stack spacing={1} key={`icon-group-${group}`}>
                                 <Typography sx={{fontWeight: 'bold'}}>{StringUtils.capitalize(group) + "s"}</Typography>
                                 <Box>
