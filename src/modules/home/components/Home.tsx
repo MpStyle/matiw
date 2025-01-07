@@ -140,6 +140,12 @@ export const Home: FunctionComponent = () => {
                 }
             });
 
+            map.on("movestart", function () {
+                setCardState({
+                    itemData: undefined,
+                });
+            });
+
             map.on("pointermove", function (evt) {
                 const hit = map.forEachFeatureAtPixel(evt.pixel, () => true);
 
