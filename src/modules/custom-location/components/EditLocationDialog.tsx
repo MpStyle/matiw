@@ -74,11 +74,11 @@ export const EditLocationDialog: FunctionComponent<EditLocationDialogProps> = pr
                 <Stack direction="row" spacing={2}>
                     <Box>
                         {MIconGroups.map((group, index) => {
-                            return <Stack spacing={1} key={`micon-group-key-${index}`}>
+                            return <Stack spacing={1} key={`icon-group-${group}`}>
                                 <Typography sx={{fontWeight: 'bold'}}>{StringUtils.capitalize(group) + "s"}</Typography>
                                 <Box>
                                     {Object.keys(MGroupedIcons[group]).map(iconName => {
-                                        return <Box component="span" sx={{m: 1, display: "inline-block"}} key={`group-key-${index}`}>
+                                        return <Box component="span" sx={{m: 1, display: "inline-block"}} key={`icon-key-${iconName}`}>
                                             <IconButton
                                                 sx={{
                                                     backgroundColor: customLocation?.iconName === iconName ? theme.palette.grey[200] : 'none'
