@@ -122,19 +122,11 @@ export const Home: FunctionComponent = () => {
             const extent = boundingExtent(newFeatures.map(feature => feature.getGeometry()!.getCoordinates()!));
             map.getView().fit(extent, {padding: [50, 50, 50, 50]});
 
-            map.on('pointermove', function (evt) {
-                if (evt.dragging) {
-                    setCardState({
-                        itemData: undefined,
-                    })
-                }
+            map.on('click', function (evt) {
+                const clickedFeature = map.forEachFeatureAtPixel(evt.pixel, feature => feature);
 
-                const selectedFeature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
-                    return feature;
-                });
-
-                if (selectedFeature) {
-                    const index = selectedFeature.getId() ? selectedFeature.getId() as number : 0;
+                if (clickedFeature) {
+                    const index = clickedFeature.getId() ? clickedFeature.getId() as number : 0;
                     const selectedData = jsonData[index];
                     setCardState({
                         top: evt.pixel[1],
@@ -145,6 +137,16 @@ export const Home: FunctionComponent = () => {
                     setCardState({
                         itemData: undefined,
                     })
+                }
+            });
+
+            map.on("pointermove", function (evt) {
+                const hit = map.forEachFeatureAtPixel(evt.pixel, () => true);
+
+                if (hit) {
+                    map.getTargetElement().style.cursor = 'pointer';
+                } else {
+                    map.getTargetElement().style.cursor = '';
                 }
             });
         }
